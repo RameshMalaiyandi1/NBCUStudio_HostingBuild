@@ -121,7 +121,7 @@
         NSArray *attachmentPaths = [parameters objectForKey:@"attachments"];
         if (attachmentPaths) {
             for (NSString* path in attachmentPaths){
-                if(path != @"")
+                if(![path isEqual: @""])
                 {
                     NSLog(@"attachmentPaths %@ ",attachmentPaths);
                     UIImage *image = [self getImage];
@@ -142,7 +142,7 @@
         }
         //        UIImage *image = [self getImage];
         //        NSData* data = UIImagePNGRepresentation(image);
-        //        
+        //
         //        //  NSLog(@"data: %@",data);
         //        int counter = 1;
         //        @try {
@@ -171,7 +171,7 @@
 }
 
 - (NSString*)saveImage:(UIImage*)image {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"savedImage.png"];
     NSData *imageData = UIImagePNGRepresentation(image);
@@ -180,7 +180,7 @@
 }
 
 - (UIImage*)getImage {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *getImagePath = [documentsDirectory stringByAppendingPathComponent:@"savedImage.png"];
     UIImage *img = [UIImage imageWithContentsOfFile:getImagePath];
@@ -191,7 +191,7 @@
 
 // Dismisses the email composition interface when users tap Cancel or Send.
 // Proceeds to update the message field with the result of the operation.
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {   
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
     // Notifies users about errors associated with the interface
     int webviewResult = 0;
     

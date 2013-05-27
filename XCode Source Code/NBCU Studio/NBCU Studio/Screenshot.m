@@ -14,12 +14,12 @@
 
 #import "Screenshot.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#include <QuartzCore/QuartzCore.h>
 
 @interface Screenshot ()
 
 -(void) showScreenshotWithParameters:(NSDictionary*)parameters;
 -(void) returnWithCode:(int)code;
--(NSString *) getMimeTypeFromFileExtension:(NSString *)extension;
 
 @end
 
@@ -39,8 +39,8 @@
                                 nil];
     NSLog(@"in showScreenshot");
     
-        [self showScreenshotWithParameters:parameters];
-    }
+    [self showScreenshotWithParameters:parameters];
+}
 
 // COMMENT THIS METHOD if you want to use the plugin with versions of cordova < 2.2.0
 //- (void) showScreenshot:(CDVInvokedUrlCommand*)command {
@@ -49,7 +49,7 @@
 //}
 
 -(void) showScreenshotWithParameters:(NSDictionary*)parameters {
-
+    
     
     @try {
         CGRect imageRect;
@@ -78,11 +78,12 @@
         CGContextTranslateCTM(ctx, 0, 0);
         CGContextFillRect(ctx, imageRect);
         
+        
         [webView.layer renderInContext:ctx];
         
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-       // UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
-        NSString *path = [self saveImage:image];
+        // UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+        [self saveImage:image];
         UIGraphicsEndImageContext();
     }
     @catch (NSException *exception) {
@@ -91,18 +92,18 @@
     @finally {
         [self returnWithCode:RETURN_CODE_EMAIL_NOTSENT];
     }
-
+    
 }
 
 - (NSString*)saveImage:(UIImage*)image {
     NSLog(@"Saving");
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *savedImagePath = [documentsDirectory stringByAppendingPathComponent:@"savedImage.png"];
     NSData *imageData = UIImagePNGRepresentation(image);
     UIImagePNGRepresentation(image);
     [imageData writeToFile:savedImagePath atomically:NO];
-        
+    
     return [NSString stringWithFormat:@"%@",savedImagePath];
 }
 
